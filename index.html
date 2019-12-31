@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>D10</title>
+    <style>
+        .active {
+            color:red
+        }
+           
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <li v-for="(move,index) in moves" v-bind:class="{active:currentindex==index}" @click="setindex(index)">{{move}}</li>
+        <hr>
+        <div v-if="books.length">
+            <table border="1">
+                <thead>
+                    <th>名称</th><th>价格</th><th>数量</th><th>移除</th>
+                </thead>
+                <tbody>
+                    <tr v-for="(book,index) in books">
+                        <td>{{book.name}}</td>
+                        <td>{{book.price|priceFilter}}</td>
+                        <td><button @click="decrease(index)" :disabled="book.counter <=1 "> - </button>{{book.counter}} <button @click="increase(index)"> + </button></td>
+                        <td><button @click="remove(index)">移除</button></td>
+                    </tr>
+                    <tr><td>TotalPrice:{{total|priceFilter}}</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div v-else>
+            <h3>购物车为空</h3>
+        </div>
+        
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                moves:["庆余年","剑王朝","海贼王","海王"],
+                currentindex:0,
+                books:[
+                    {id:1,name:"计算机基础",price:79.99,counter:1},
+                    {id:1,name:"VUE基础",price:65.00,counter:1},
+                    {id:1,name:"Python基础",price:88.00,counter:1},
+                    {id:1,name:"Oracle基础",price:50.88,counter:1}
+                ]
+            },
+            computed:{
+                total(){
+                    let total=0;
+                    for(let book of this.books){
+                        total += book.price * book.counter
+                    }
+                    return total;
+                }
+            },
+            methods:{
+                setindex(index){
+                    this.currentindex=index
+                },
+                decrease(index){
+                    this.books[index].counter--
+                },
+                increase(index){
+                    this.books[index].counter++
+                },
+                remove(index){
+                    this.books.splice(index,1)
+                    console.log(this.books.length)
+                }
+            },
+            filters:{
+                priceFilter(value){
+                    return value.toFixed(2)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
